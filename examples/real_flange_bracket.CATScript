@@ -1,0 +1,217 @@
+Language="VBSCRIPT"
+
+Sub CATMain()
+
+Dim partDocument1 As PartDocument
+Set partDocument1 = CATIA.ActiveDocument
+
+Dim part1 As Part
+Set part1 = partDocument1.Part
+
+Dim bodies1 As Bodies
+Set bodies1 = part1.Bodies
+
+Dim body1 As Body
+Set body1 = bodies1.Item("PartBody")
+
+Dim sketches1 As Sketches
+Set sketches1 = body1.Sketches
+
+Dim originElements1 As OriginElements
+Set originElements1 = part1.OriginElements
+
+Dim reference1 As Reference
+Set reference1 = originElements1.PlaneXY
+
+Dim sketch1 As Sketch
+Set sketch1 = sketches1.Add(reference1)
+
+Dim arrayOfVariants1(0)
+Set arrayOfVariants1(0) = reference1
+part1.InWorkObject = sketch1
+
+Dim factory2D1 As Factory2D
+Set factory2D1 = sketch1.OpenEdition()
+
+Dim geometricElements1 As GeometricElements
+Set geometricElements1 = sketch1.GeometricElements
+
+Dim axis2D1 As Axis2D
+Set axis2D1 = geometricElements1.Item("AbsoluteAxis")
+
+Dim line2D1 As Line2D
+Set line2D1 = axis2D1.GetItem("HDirection")
+line2D1.ReportName = 1
+
+Dim line2D2 As Line2D
+Set line2D2 = axis2D1.GetItem("VDirection")
+line2D2.ReportName = 2
+
+Dim point2D1 As Point2D
+Set point2D1 = axis2D1.GetItem("Origin")
+
+Dim line2D3 As Line2D
+Set line2D3 = factory2D1.CreateLine(-60, -40, 60, -40)
+line2D3.ReportName = 3
+
+Dim line2D4 As Line2D
+Set line2D4 = factory2D1.CreateLine(60, -40, 60, 40)
+line2D4.ReportName = 4
+
+Dim line2D5 As Line2D
+Set line2D5 = factory2D1.CreateLine(60, 40, -60, 40)
+line2D5.ReportName = 5
+
+Dim line2D6 As Line2D
+Set line2D6 = factory2D1.CreateLine(-60, 40, -60, -40)
+line2D6.ReportName = 6
+
+sketch1.CloseEdition
+
+part1.InWorkObject = sketch1
+part1.Update
+
+Dim shapeFactory1 As ShapeFactory
+Set shapeFactory1 = part1.ShapeFactory
+
+Dim pad1 As Pad
+Set pad1 = shapeFactory1.AddNewPad(sketch1, 8)
+
+Dim limit1 As Limit
+Set limit1 = pad1.FirstLimit
+
+Dim dimension1 As Dimension
+Set dimension1 = limit1.Dimension
+dimension1.Value = 8
+
+part1.InWorkObject = pad1
+part1.Update
+
+Dim reference2 As Reference
+Set reference2 = part1.CreateReferenceFromName("Selection_RSur:(Face:(Brp:(Pad.1;2);None:();Cf11:());Pad.1_ResultOUT;Z0;G3003)")
+
+Dim sketch2 As Sketch
+Set sketch2 = sketches1.Add(reference2)
+
+part1.InWorkObject = sketch2
+
+Dim factory2D2 As Factory2D
+Set factory2D2 = sketch2.OpenEdition()
+
+Dim geometricElements2 As GeometricElements
+Set geometricElements2 = sketch2.GeometricElements
+
+Dim axis2D2 As Axis2D
+Set axis2D2 = geometricElements2.Item("AbsoluteAxis")
+
+Dim circle2D1 As Circle2D
+Set circle2D1 = factory2D2.CreateClosedCircle(0, 0, 12.5)
+
+Dim point2D2 As Point2D
+Set point2D2 = factory2D2.CreatePoint(0, 0)
+circle2D1.CenterPoint = point2D2
+
+circle2D1.ReportName = 3
+
+sketch2.CloseEdition
+
+part1.InWorkObject = sketch2
+part1.Update
+
+Dim pocket1 As Pocket
+Set pocket1 = shapeFactory1.AddNewPocket(sketch2, 8)
+
+Dim limit2 As Limit
+Set limit2 = pocket1.FirstLimit
+limit2.LimitMode = catUpToLastLimit
+
+part1.InWorkObject = pocket1
+part1.Update
+
+Dim reference3 As Reference
+Set reference3 = part1.CreateReferenceFromName("Selection_RSur:(Face:(Brp:(Pad.1;2);None:();Cf11:());Pad.1_ResultOUT;Z0;G3003)")
+
+Dim sketch3 As Sketch
+Set sketch3 = sketches1.Add(reference3)
+
+part1.InWorkObject = sketch3
+
+Dim factory2D3 As Factory2D
+Set factory2D3 = sketch3.OpenEdition()
+
+Dim circle2D2 As Circle2D
+Set circle2D2 = factory2D3.CreateClosedCircle(40, 20, 4.25)
+
+Dim point2D3 As Point2D
+Set point2D3 = factory2D3.CreatePoint(40, 20)
+circle2D2.CenterPoint = point2D3
+
+circle2D2.ReportName = 1
+
+Dim circle2D3 As Circle2D
+Set circle2D3 = factory2D3.CreateClosedCircle(-40, 20, 4.25)
+
+Dim point2D4 As Point2D
+Set point2D4 = factory2D3.CreatePoint(-40, 20)
+circle2D3.CenterPoint = point2D4
+
+circle2D3.ReportName = 2
+
+Dim circle2D4 As Circle2D
+Set circle2D4 = factory2D3.CreateClosedCircle(40, -20, 4.25)
+
+Dim point2D5 As Point2D
+Set point2D5 = factory2D3.CreatePoint(40, -20)
+circle2D4.CenterPoint = point2D5
+
+circle2D4.ReportName = 3
+
+Dim circle2D5 As Circle2D
+Set circle2D5 = factory2D3.CreateClosedCircle(-40, -20, 4.25)
+
+Dim point2D6 As Point2D
+Set point2D6 = factory2D3.CreatePoint(-40, -20)
+circle2D5.CenterPoint = point2D6
+
+circle2D5.ReportName = 4
+
+sketch3.CloseEdition
+
+part1.InWorkObject = sketch3
+part1.Update
+
+Dim pocket2 As Pocket
+Set pocket2 = shapeFactory1.AddNewPocket(sketch3, 8)
+
+Dim limit3 As Limit
+Set limit3 = pocket2.FirstLimit
+limit3.LimitMode = catUpToLastLimit
+
+part1.InWorkObject = pocket2
+part1.Update
+
+Dim reference7 As Reference
+Set reference7 = part1.CreateReferenceFromBRepName("REdge:(Edge:(Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;3)));None:();Cf11:());Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;4)));None:();Cf11:());None:(Limits1:();Limits2:());Cf11:());WithTemporaryBody;WithoutBuildError;WithSelectingFeatureSupport;MFBRepVersion_CXR15)", pad1)
+
+Dim constRadEdgeFillet1 As ConstRadEdgeFillet
+Set constRadEdgeFillet1 = shapeFactory1.AddNewEdgeFilletWithConstantRadius(reference7, catTangencyFilletRadiusType, 5)
+constRadEdgeFillet1.EdgePropagation = catTangentFilletEdgePropagation
+
+Dim reference8 As Reference
+Set reference8 = part1.CreateReferenceFromBRepName("REdge:(Edge:(Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;5)));None:();Cf11:());Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;4)));None:();Cf11:());None:(Limits1:();Limits2:());Cf11:());WithTemporaryBody;WithoutBuildError;WithSelectingFeatureSupport;MFBRepVersion_CXR15)", pad1)
+constRadEdgeFillet1.AddObjectToFillet reference8
+
+constRadEdgeFillet1.Radius.Value = 5
+
+Dim reference9 As Reference
+Set reference9 = part1.CreateReferenceFromBRepName("REdge:(Edge:(Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;5)));None:();Cf11:());Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;6)));None:();Cf11:());None:(Limits1:();Limits2:());Cf11:());WithTemporaryBody;WithoutBuildError;WithSelectingFeatureSupport;MFBRepVersion_CXR15)", pad1)
+constRadEdgeFillet1.AddObjectToFillet reference9
+
+Dim reference10 As Reference
+Set reference10 = part1.CreateReferenceFromBRepName("REdge:(Edge:(Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;3)));None:();Cf11:());Face:(Brp:(Pad.1;0:(Brp:(Sketch.1;6)));None:();Cf11:());None:(Limits1:();Limits2:());Cf11:());WithTemporaryBody;WithoutBuildError;WithSelectingFeatureSupport;MFBRepVersion_CXR15)", pad1)
+constRadEdgeFillet1.AddObjectToFillet reference10
+
+part1.InWorkObject = constRadEdgeFillet1
+part1.Update
+
+End Sub

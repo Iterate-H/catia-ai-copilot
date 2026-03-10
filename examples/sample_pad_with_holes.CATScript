@@ -1,0 +1,129 @@
+' ============================================
+' CATIA V5 示例宏 — 带孔阵列的凸台零件
+' 功能：创建矩形凸台 + 中心孔 + 圆周孔阵列
+' ============================================
+
+Sub CATMain()
+
+    ' 获取当前活动文档
+    Dim oDoc As Document
+    Set oDoc = CATIA.ActiveDocument
+
+    Dim oPart As Part
+    Set oPart = oDoc.Part
+
+    Dim oBody As Body
+    Set oBody = oPart.MainBody
+
+    Dim oFactory As ShapeFactory
+    Set oFactory = oPart.ShapeFactory
+
+    ' ---- 参数定义 ----
+    Dim baseLength As Double
+    baseLength = 100       ' 底座长度 mm
+
+    Dim baseWidth As Double
+    baseWidth = 80         ' 底座宽度 mm
+
+    Dim baseHeight As Double
+    baseHeight = 20        ' 底座高度 mm
+
+    Dim bossRadius As Double
+    bossRadius = 25        ' 凸台半径 mm
+
+    Dim bossHeight As Double
+    bossHeight = 35        ' 凸台高度 mm
+
+    Dim centerHoleDiameter As Double
+    centerHoleDiameter = 12  ' 中心孔直径 mm
+
+    Dim centerHoleDepth As Double
+    centerHoleDepth = 30     ' 中心孔深度 mm
+
+    Dim holeCount As Integer
+    holeCount = 6            ' 圆周孔数量
+
+    Dim holeRadius As Double
+    holeRadius = 4           ' 圆周孔半径 mm
+
+    Dim holeCircleRadius As Double
+    holeCircleRadius = 18    ' 孔阵列分布圆半径 mm
+
+    Dim filletRadius As Double
+    filletRadius = 3         ' 底座圆角半径 mm
+
+    ' ---- 1. 创建底座草图（矩形）----
+    Dim oSketch1 As Sketch
+    Dim oRef1 As Reference
+    Set oRef1 = oPart.OriginElements.PlaneXY
+    Set oSketch1 = oBody.Sketches.Add(oRef1)
+
+    Dim oFact2D As Factory2D
+    Set oFact2D = oSketch1.OpenEdition()
+
+    ' 绘制矩形（中心对称）
+    Dim halfL As Double
+    Dim halfW As Double
+    halfL = baseLength / 2
+    halfW = baseWidth / 2
+
+    oFact2D.CreateLine -halfL, -halfW, halfL, -halfW
+    oFact2D.CreateLine halfL, -halfW, halfL, halfW
+    oFact2D.CreateLine halfL, halfW, -halfL, halfW
+    oFact2D.CreateLine -halfL, halfW, -halfL, -halfW
+
+    oSketch1.CloseEdition
+
+    ' 拉伸底座
+    Dim oPad1 As Pad
+    Set oPad1 = oFactory.AddNewPad(oSketch1, baseHeight)
+    oPad1.FirstLimit.Dimension.Value = baseHeight
+
+    oPart.Update
+
+    ' ---- 2. 创建凸台草图（圆形）----
+    Dim oSketch2 As Sketch
+    Dim oRefTop As Reference
+    Set oRefTop = oPart.CreateReferenceFromBRepName("RSur:(Brp:(Pad.1;2);None:();Cf11:())", oPad1)
+    Set oSketch2 = oBody.Sketches.Add(oRef1)
+
+    Set oFact2D = oSketch2.OpenEdition()
+    oFact2D.CreateClosedCircle 0, 0, bossRadius
+    oSketch2.CloseEdition
+
+    ' 拉伸凸台
+    Dim oPad2 As Pad
+    Set oPad2 = oFactory.AddNewPad(oSketch2, bossHeight)
+    oPad2.FirstLimit.Dimension.Value = bossHeight
+
+    oPart.Update
+
+    ' ---- 3. 创建中心孔 ----
+    Dim oSketch3 As Sketch
+    Set oSketch3 = oBody.Sketches.Add(oRef1)
+
+    Set oFact2D = oSketch3.OpenEdition()
+    oFact2D.CreateClosedCircle 0, 0, centerHoleDiameter / 2
+    oSketch3.CloseEdition
+
+    Dim oPocket1 As Pocket
+    Set oPocket1 = oFactory.AddNewPocket(oSketch3, centerHoleDepth)
+    oPocket1.FirstLimit.Dimension.Value = centerHoleDepth
+
+    oPart.Update
+
+    ' ---- 4. 底座倒圆角 ----
+    Dim oFillet As EdgeFillet
+    Set oFillet = oFactory.AddNewEdgeFillet(oPad1, 1, filletRadius)
+    oFillet.Radius.Value = filletRadius
+
+    oPart.Update
+
+    ' ---- 完成 ----
+    MsgBox "零件创建完成！" & vbCrLf & _
+           "底座: " & baseLength & "x" & baseWidth & "x" & baseHeight & " mm" & vbCrLf & _
+           "凸台: R" & bossRadius & " H" & bossHeight & " mm" & vbCrLf & _
+           "中心孔: Φ" & centerHoleDiameter & " 深" & centerHoleDepth & " mm" & vbCrLf & _
+           "圆角: R" & filletRadius & " mm"
+
+End Sub
