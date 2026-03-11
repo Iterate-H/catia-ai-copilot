@@ -1,6 +1,15 @@
 """CATIA 宏参数化工具 — PyQt5 桌面应用入口。"""
 
+import os
 import sys
+
+# Fix: Qt platform plugin not found on Windows
+if sys.platform == "win32":
+    import pathlib
+    venv_qt = pathlib.Path(sys.prefix) / "Lib" / "site-packages" / "PyQt5" / "Qt5" / "plugins"
+    if venv_qt.exists():
+        os.environ["QT_QPA_PLATFORM_PLUGIN_PATH"] = str(venv_qt / "platforms")
+
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import Qt
 from ui.main_window import MainWindow

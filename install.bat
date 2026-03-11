@@ -9,23 +9,31 @@ echo.
 python --version >nul 2>&1
 if errorlevel 1 goto nopython
 
-echo [1/3] Creating virtual environment...
-if not exist ".venv" (
+if not exist ".venv\Scripts\python.exe" (
+    echo [1/3] Creating virtual environment...
     python -m venv .venv
+    if not exist ".venv\Scripts\python.exe" (
+        echo Failed to create virtual environment.
+        pause
+        exit /b 1
+    )
+) else (
+    echo [1/3] Virtual environment exists.
 )
-if not exist ".venv\Scripts\activate.bat" (
-    echo Failed to create virtual environment.
+
+echo [2/3] Installing dependencies (may take a minute)...
+.venv\Scripts\pip.exe install -r requirements.txt
+if errorlevel 1 (
+    echo.
+    echo Install failed. Check your network connection.
     pause
     exit /b 1
 )
 
-echo [2/3] Installing dependencies...
-call .venv\Scripts\activate.bat
-pip install -r requirements.txt -q
-
+echo.
 echo [3/3] Starting application...
 echo.
-python app.py
+.venv\Scripts\python.exe app.py
 pause
 exit /b 0
 
