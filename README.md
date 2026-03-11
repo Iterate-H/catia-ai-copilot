@@ -23,14 +23,18 @@
 
 ## 快速开始
 
-### Windows（推荐，可直接驱动 CATIA）
+### 方式一：下载 exe 直接运行（无需 Python）
 
-双击 `install.bat`，自动完成安装和启动。
+前往 [Releases](https://github.com/Iterate-H/catia-ai-copilot/releases) 下载最新版 exe，双击即可使用。
 
-### 手动安装
+### 方式二：源码安装
+
+**Windows 用户**：双击 `install.bat`，自动完成安装和启动（需已安装 [Python 3.9+](https://www.python.org/downloads/)，安装时勾选 "Add Python to PATH"）。
+
+**手动安装**：
 
 ```bash
-git clone https://github.com/你的用户名/catia-ai-copilot.git
+git clone https://github.com/Iterate-H/catia-ai-copilot.git
 cd catia-ai-copilot
 python -m venv .venv
 source .venv/bin/activate  # Windows: .venv\Scripts\activate

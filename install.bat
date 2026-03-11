@@ -1,8 +1,5 @@
 @echo off
-:: 切换到脚本所在目录
 cd /d "%~dp0"
-
-:: 尝试设置UTF-8，失败也继续
 chcp 65001 >nul 2>&1
 
 echo ============================================
@@ -13,11 +10,28 @@ echo.
 :: 检查 Python
 python --version >nul 2>&1
 if errorlevel 1 (
-    echo [Error] Python not found. Please install Python 3.9+
-    echo Download: https://www.python.org/downloads/
+    echo ============================================
+    echo   Python not detected!
+    echo ============================================
     echo.
-    echo NOTE: Check "Add Python to PATH" during installation!
+    echo   Two options:
     echo.
+    echo   [Option 1] Download exe version (no Python needed):
+    echo   https://github.com/Iterate-H/catia-ai-copilot/releases
+    echo.
+    echo   [Option 2] Install Python first:
+    echo   https://www.python.org/downloads/
+    echo   IMPORTANT: Check "Add Python to PATH" during install!
+    echo.
+    echo   After installing Python, run this script again.
+    echo ============================================
+    echo.
+    choice /c 12 /n /m "Open [1] Releases page or [2] Python download? "
+    if errorlevel 2 (
+        start https://www.python.org/downloads/
+    ) else (
+        start https://github.com/Iterate-H/catia-ai-copilot/releases
+    )
     pause
     exit /b 1
 )
