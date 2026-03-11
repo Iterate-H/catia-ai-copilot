@@ -33,6 +33,19 @@ if errorlevel 1 (
 echo.
 echo [3/3] Starting application...
 echo.
+
+:: Find Qt plugins path and set it
+for /f "delims=" %%i in ('.venv\Scripts\python.exe -c "import os, PyQt5; print(os.path.join(os.path.dirname(PyQt5.__file__), 'Qt5', 'plugins', 'platforms'))"') do set QT_QPA_PLATFORM_PLUGIN_PATH=%%i
+
+echo Qt plugin path: %QT_QPA_PLATFORM_PLUGIN_PATH%
+
+if not exist "%QT_QPA_PLATFORM_PLUGIN_PATH%\qwindows.dll" (
+    echo.
+    echo Qt plugin not found, trying alternate path...
+    for /f "delims=" %%i in ('.venv\Scripts\python.exe -c "import os, PyQt5; print(os.path.join(os.path.dirname(PyQt5.__file__), 'Qt', 'plugins', 'platforms'))"') do set QT_QPA_PLATFORM_PLUGIN_PATH=%%i
+    echo Qt plugin path: %QT_QPA_PLATFORM_PLUGIN_PATH%
+)
+
 .venv\Scripts\python.exe app.py
 pause
 exit /b 0
