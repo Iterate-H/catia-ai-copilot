@@ -124,7 +124,13 @@ def run_in_catia(macro_code: str, language: str = "vbscript") -> str:
     try:
         import win32com.client  # type: ignore
     except ImportError:
-        return "缺少 pywin32 库。请运行: pip install pywin32"
+        return (
+            "需要安装 pywin32 库才能自动驱动 CATIA。\n\n"
+            "请在命令行运行:\n"
+            "  pip install pywin32\n\n"
+            "如果未安装 CATIA，请使用「导出脚本」保存宏文件，\n"
+            "拷贝到装有 CATIA 的电脑上手动运行。"
+        )
 
     if language == "python":
         # Python 宏 → 保存为临时文件并执行

@@ -307,17 +307,7 @@ class MainWindow(QMainWindow):
         code = self._code_preview.toPlainText()
         language = detect_language(code)
 
-        import sys
-        if sys.platform != "win32":
-            _show_msg(
-                self, "提示",
-                "CATIA 自动执行仅支持 Windows 系统。\n\n"
-                "当前为 macOS/Linux 环境，请使用「导出脚本」\n"
-                "保存宏文件后，在 Windows + CATIA 环境中手动运行。"
-            )
-            return
-
-        self._statusbar.showMessage(u"正在执行宏...")
+        self._statusbar.showMessage("正在执行宏...")
         self._run_worker = CatiaRunWorker(code, language)
         self._run_worker.finished.connect(self._on_run_done)
         self._run_worker.start()
